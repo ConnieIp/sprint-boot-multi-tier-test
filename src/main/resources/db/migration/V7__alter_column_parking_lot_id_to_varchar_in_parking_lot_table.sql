@@ -1,0 +1,1 @@
+alter table if exists parking_lot alter column parking_lot_id varchar(64) not null;
