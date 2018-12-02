@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.persistence.EntityManager;
 
+import java.util.List;
+
 import static com.oocl.web.sampleWebApp.WebTestUtil.getContentAsObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -80,6 +82,26 @@ public class ParkingBoyResourceTests {
         entityManager.clear();
 
         assertEquals("PB0001", createdBoy.getEmployeeId());
+    }
+
+    @Test
+    public void should_not_create_parking_boys_if_parkingBoyId_length_exceed() throws Exception {
+        //Given a parking boy {"employeeId":"boy"}, When POST /parkingBoys, Return 201
+        // Given
+        final ParkingBoy boy = new ParkingBoy("12345678901234567890123456789012345678901234567890123456789012345");
+
+        // When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .post("/parkingboys").content(asJsonString(boy)).contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        // Then
+        assertEquals(400, result.getResponse().getStatus());
+
+        final List<ParkingBoy> createdBoy = parkingBoyRepository.findAll();
+        entityManager.clear();
+
+        assertEquals(0, createdBoy.size());
     }
 
     @Test

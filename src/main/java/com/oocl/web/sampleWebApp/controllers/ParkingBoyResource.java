@@ -33,7 +33,10 @@ public class ParkingBoyResource {
     }
 
     @PostMapping
-    public ResponseEntity<ParkingBoyResponse> add(@RequestBody ParkingBoy parkingBoy) {
+    public ResponseEntity add(@RequestBody ParkingBoy parkingBoy) {
+        if(parkingBoy.getEmployeeId().length()>64){
+            return ResponseEntity.badRequest().build();
+        }
         final ParkingBoyResponse parkingBoyResponse = ParkingBoyResponse.create(parkingBoyRepository.save(parkingBoy));
         return ResponseEntity.created(URI.create("/parkingboys")).body(parkingBoyResponse);
     }
