@@ -47,6 +47,9 @@ public class ParkingBoyResource {
     @PostMapping(path = "/{employeeId}/parkinglots")
     public ResponseEntity addParkingLotToParkingBoy(@PathVariable String employeeId,@RequestBody ParkingBoyParkingLotAssociationRequest parkingBoyParkingLotAssociationRequest){
         ParkingBoy parkingBoy=parkingBoyRepository.findOneByEmployeeId(employeeId);
+        if(parkingBoy==null){
+            return ResponseEntity.notFound().build();
+        }
         ParkingLot parkingLot=parkingLotRepository.findOneByParkingLotId(parkingBoyParkingLotAssociationRequest.getParkingLotId());
         parkingLot.setParkingBoyId(employeeId);
         parkingLotRepository.save(parkingLot);
@@ -56,6 +59,9 @@ public class ParkingBoyResource {
     @GetMapping(path = "/{employeeId}")
     public ResponseEntity<ParkingBoyResponse> getParkingBoy(@PathVariable String employeeId){
         ParkingBoy parkingBoy=parkingBoyRepository.findOneByEmployeeId(employeeId);
+        if(parkingBoy==null){
+            return ResponseEntity.notFound().build();
+        }
         List<ParkingLot> parkingLots=parkingLotRepository.findAll().stream().filter(lot -> lot.getParkingBoyId().equals(employeeId)).collect(Collectors.toList());
         ParkingBoyResponse parkingBoyResponse=ParkingBoyResponse.create(parkingBoy,parkingLots);
         return new ResponseEntity<ParkingBoyResponse>(parkingBoyResponse,HttpStatus.OK);

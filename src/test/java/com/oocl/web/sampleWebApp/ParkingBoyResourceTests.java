@@ -25,6 +25,7 @@ import java.util.List;
 
 import static com.oocl.web.sampleWebApp.WebTestUtil.getContentAsObject;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -178,6 +179,39 @@ public class ParkingBoyResourceTests {
         assertEquals(1,parkingBoy.getParkingLot().size());
         assertEquals("PL0001",parkingBoy.getParkingLot().get(0).getParkingLotId());
     }
+
+    @Test
+    public void should_not_get_parking_boy_if_employeeId_not_exist() throws Exception {
+        //When GET /parkingBoys/{employeeId} with wrong employeeId , Return 404
+
+        // Given
+
+        // When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .get("/parkingboys/boy"))
+                .andReturn();
+
+        // Then
+        assertEquals(404, result.getResponse().getStatus());
+
+    }
+    @Test
+    public void should_not_add_parking_lot_to_parking_boy_if_employeeId_not_exist() throws Exception {
+        //When POST /parkingBoys/{employeeId}/parkinglots with wrong employeeId , Return 404
+
+        // Given
+        final ParkingBoyParkingLotAssociationRequest associationRequest=new ParkingBoyParkingLotAssociationRequest("PL0001");
+
+
+        // When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .post("/parkingboys/boy/parkinglots").content(asJsonString(associationRequest)).contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+        // Then
+        assertEquals(404, result.getResponse().getStatus());
+
+    }
+
 
     public static String asJsonString(final Object obj) {
         try {
