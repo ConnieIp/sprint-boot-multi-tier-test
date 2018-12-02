@@ -1,5 +1,6 @@
 package com.oocl.web.sampleWebApp;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.web.sampleWebApp.domain.ParkingBoy;
 import com.oocl.web.sampleWebApp.domain.ParkingLot;
 import com.oocl.web.sampleWebApp.domain.ParkingLotRepository;
@@ -10,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,6 +56,37 @@ public class ParkingLotResourceTests {
 
         assertEquals(1, parkingLots.length);
         assertEquals("lot", parkingLots[0].getParkingLotId());
+    }
+
+    @Test
+    public void should_create_parking_lots() throws Exception {
+        //Given a parkinglLot {"parkingLotID": "string", "capacity": integer}, When POST /parkingLots, Return 201
+        // Given
+        final ParkingLot lot = new ParkingLot("PL0001",10);
+
+        // When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .post("/parkinglots").content(asJsonString(lot)).contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        // Then
+        assertEquals(201, result.getResponse().getStatus());
+
+        final ParkingLot createdLot = parkingLotRepository.findAll().get(0);
+        entityManager.clear();
+
+        assertEquals("PL0001", createdLot.getParkingLotID());
+        assertEquals(10,createdLot.getCapacity());
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            final String jsonContent = mapper.writeValueAsString(obj);
+            return jsonContent;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
