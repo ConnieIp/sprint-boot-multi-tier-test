@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class ParkingBoyResponse {
     private String employeeId;
-    private List<ParkingLot> parkingLot;
+    private List<ParkingLotResponse> parkingLot;
 
     public String getEmployeeId() {
         return employeeId;
@@ -20,11 +20,11 @@ public class ParkingBoyResponse {
         this.employeeId = employeeId;
     }
 
-    public List<ParkingLot> getParkingLot() {
+    public List<ParkingLotResponse> getParkingLot() {
         return parkingLot;
     }
 
-    public void setParkingLot(List<ParkingLot> parkingLot) {
+    public void setParkingLot(List<ParkingLotResponse> parkingLot) {
         this.parkingLot = parkingLot;
     }
 
@@ -34,7 +34,11 @@ public class ParkingBoyResponse {
         final ParkingBoyResponse response = new ParkingBoyResponse();
         response.setEmployeeId(employeeId);
         if(parkingLots!=null) {
-            response.setParkingLot(parkingLots);
+            List<ParkingLotResponse> lotResponses=new ArrayList<>();
+            for(ParkingLot lot:parkingLots) {
+                lotResponses.add(ParkingLotResponse.create(lot));
+            }
+            response.setParkingLot(lotResponses);
         }
         return response;
     }
