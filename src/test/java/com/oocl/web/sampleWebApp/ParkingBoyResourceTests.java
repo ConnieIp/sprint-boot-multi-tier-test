@@ -3,6 +3,9 @@ package com.oocl.web.sampleWebApp;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oocl.web.sampleWebApp.domain.ParkingBoy;
 import com.oocl.web.sampleWebApp.domain.ParkingBoyRepository;
+import com.oocl.web.sampleWebApp.domain.ParkingLot;
+import com.oocl.web.sampleWebApp.domain.ParkingLotRepository;
+import com.oocl.web.sampleWebApp.models.ParkingBoyParkingLotAssociationRequest;
 import com.oocl.web.sampleWebApp.models.ParkingBoyResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +32,8 @@ import static org.junit.Assert.assertTrue;
 public class ParkingBoyResourceTests {
     @Autowired
     private ParkingBoyRepository parkingBoyRepository;
+    @Autowired
+    private ParkingLotRepository parkingLotRepository;
     @Autowired
     private EntityManager entityManager;
 
@@ -61,7 +66,7 @@ public class ParkingBoyResourceTests {
     public void should_create_parking_boys() throws Exception {
         //Given a parking boy {"employeeId":"boy"}, When POST /parkingBoys, Return 201
         // Given
-        final ParkingBoy boy = new ParkingBoy("PD0001");
+        final ParkingBoy boy = new ParkingBoy("PB0001");
 
         // When
         final MvcResult result = mvc.perform(MockMvcRequestBuilders
@@ -74,7 +79,34 @@ public class ParkingBoyResourceTests {
         final ParkingBoy createdBoy = parkingBoyRepository.findAll().get(0);
         entityManager.clear();
 
-        assertEquals("PD0001", createdBoy.getEmployeeId());
+        assertEquals("PB0001", createdBoy.getEmployeeId());
+    }
+
+    @Test
+    public void should_add_parking_lot_to_parking_boy() throws Exception {
+        //Given a parking boy parking lot association {"parkingLotId": "String"} and parking boy id, When POST /parkingBoys/{employeeID}/parkingLots, Return 201
+        //Given
+        final String parkingBoyId="PB0001";
+        final ParkingBoy boy = parkingBoyRepository.save(new ParkingBoy(parkingBoyId));
+        parkingBoyRepository.flush();
+        final ParkingBoyParkingLotAssociationRequest associationRequest=new ParkingBoyParkingLotAssociationRequest("PL0001");
+        final ParkingLot lot = parkingLotRepository.save(new ParkingLot(associationRequest.getParkingLotId(),10));
+        parkingLotRepository.flush();
+
+        //When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .post("/parkingboys/"+parkingBoyId+"/parkinglots").content(asJsonString(associationRequest)).contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        //Then
+        assertEquals(201, result.getResponse().getStatus());
+
+        final ParkingLot boyAddedParkingLot = parkingLotRepository.findAll().get(0);
+        entityManager.clear();
+
+        assertEquals("PL0001",boyAddedParkingLot.getParkingLotId());
+        assertEquals("PB0001", boyAddedParkingLot.getParkingBoyId());
+
     }
 
     public static String asJsonString(final Object obj) {

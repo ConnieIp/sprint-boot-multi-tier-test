@@ -1,10 +1,8 @@
 package com.oocl.web.sampleWebApp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oocl.web.sampleWebApp.domain.ParkingBoy;
 import com.oocl.web.sampleWebApp.domain.ParkingLot;
 import com.oocl.web.sampleWebApp.domain.ParkingLotRepository;
-import com.oocl.web.sampleWebApp.models.ParkingBoyResponse;
 import com.oocl.web.sampleWebApp.models.ParkingLotResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,7 +73,7 @@ public class ParkingLotResourceTests {
         final ParkingLot createdLot = parkingLotRepository.findAll().get(0);
         entityManager.clear();
 
-        assertEquals("PL0001", createdLot.getParkingLotID());
+        assertEquals("PL0001", createdLot.getParkingLotId());
         assertEquals(10,createdLot.getCapacity());
     }
 

@@ -1,0 +1,1 @@
+alter table if exists parking_lot add column if not exists parking_boy_id varchar(64);
