@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.persistence.EntityManager;
 
+import java.util.List;
+
 import static com.oocl.web.sampleWebApp.WebTestUtil.getContentAsObject;
 import static org.junit.Assert.assertEquals;
 
@@ -75,6 +77,26 @@ public class ParkingLotResourceTests {
 
         assertEquals("PL0001", createdLot.getParkingLotId());
         assertEquals(10,createdLot.getCapacity());
+    }
+
+    @Test
+    public void should_not_create_parking_lots_if_length_exceed() throws Exception {
+        //Given a parkinglLot {"parkingLotId": "string", "capacity": integer} and parkingLotId length >64, When POST /parkingLots, Return 201
+        // Given
+        final ParkingLot lot = new ParkingLot("12345678901234567890123456789012345678901234567890123456789012345",10);
+
+        // When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .post("/parkinglots").content(asJsonString(lot)).contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        // Then
+        assertEquals(400, result.getResponse().getStatus());
+
+        final List<ParkingLot> lots = parkingLotRepository.findAll();
+        entityManager.clear();
+
+        assertEquals(0,lots.size());
     }
 
     public static String asJsonString(final Object obj) {
