@@ -35,7 +35,7 @@ public class ParkingLotResourceTests {
     private MockMvc mvc;
 
     @Test
-    public void should_get_parking_boys() throws Exception {
+    public void should_get_parking_lots() throws Exception {
         //When GET /parkingLots, Return 200 with parking lots list [{"parkingLotID": "string", "availablePositionCount": integer, "capacity": integer}]
 
         // Given
