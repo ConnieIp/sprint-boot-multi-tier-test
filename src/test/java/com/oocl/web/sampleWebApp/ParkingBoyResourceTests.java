@@ -208,7 +208,7 @@ public class ParkingBoyResourceTests {
                 .post("/parkingboys/boy/parkinglots").content(asJsonString(associationRequest)).contentType(MediaType.APPLICATION_JSON)).andReturn();
 
         // Then
-        assertEquals(404, result.getResponse().getStatus());
+        assertEquals(400, result.getResponse().getStatus());
 
     }
 

@@ -48,7 +48,7 @@ public class ParkingBoyResource {
     public ResponseEntity addParkingLotToParkingBoy(@PathVariable String employeeId,@RequestBody ParkingBoyParkingLotAssociationRequest parkingBoyParkingLotAssociationRequest){
         ParkingBoy parkingBoy=parkingBoyRepository.findOneByEmployeeId(employeeId);
         if(parkingBoy==null){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         ParkingLot parkingLot=parkingLotRepository.findOneByParkingLotId(parkingBoyParkingLotAssociationRequest.getParkingLotId());
         parkingLot.setParkingBoyId(employeeId);
