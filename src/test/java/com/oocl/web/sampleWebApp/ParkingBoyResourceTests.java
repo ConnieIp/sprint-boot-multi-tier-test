@@ -109,6 +109,32 @@ public class ParkingBoyResourceTests {
 
     }
 
+    @Test
+    public void should_get_parking_boys_with_parking_lots() throws Exception {
+        //When GET /parkingBoys/{employeeID}, Return 200 with parkingBoy {"employeeID": "string", "parkingLots": [{"parkingLotID": "string", "capacity": integer}] }
+
+        // Given
+        final ParkingBoy boy = parkingBoyRepository.save(new ParkingBoy("boy"));
+        parkingBoyRepository.flush();
+        final ParkingLot lot = parkingLotRepository.save(new ParkingLot("PL0001",10,"boy"));
+        parkingLotRepository.flush();
+
+
+        // When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .get("/parkingboys/boy"))
+                .andReturn();
+
+        // Then
+        assertEquals(200, result.getResponse().getStatus());
+
+        final ParkingBoyResponse parkingBoy = getContentAsObject(result, ParkingBoyResponse.class);
+
+        assertEquals("boy", parkingBoy.getEmployeeId());
+        assertEquals(1,parkingBoy.getParkingLot().size());
+        assertEquals("PL0001",parkingBoy.getParkingLot().get(0).getParkingLotId());
+    }
+
     public static String asJsonString(final Object obj) {
         try {
             final ObjectMapper mapper = new ObjectMapper();

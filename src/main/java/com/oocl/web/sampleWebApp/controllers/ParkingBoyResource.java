@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/parkingboys")
@@ -43,5 +45,13 @@ public class ParkingBoyResource {
         parkingLot.setParkingBoyId(employeeId);
         parkingLotRepository.save(parkingLot);
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/{employeeId}")
+    public ResponseEntity<ParkingBoyResponse> getParkingBoy(@PathVariable String employeeId){
+        ParkingBoy parkingBoy=parkingBoyRepository.findOneByEmployeeId(employeeId);
+        List<ParkingLot> parkingLots=parkingLotRepository.findAll().stream().filter(lot -> lot.getParkingBoyId().equals(employeeId)).collect(Collectors.toList());
+        ParkingBoyResponse parkingBoyResponse=ParkingBoyResponse.create(parkingBoy,parkingLots);
+        return new ResponseEntity<ParkingBoyResponse>(parkingBoyResponse,HttpStatus.OK);
     }
 }

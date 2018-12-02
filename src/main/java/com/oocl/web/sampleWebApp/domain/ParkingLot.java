@@ -26,6 +26,12 @@ public class ParkingLot {
         this.capacity = capacity;
     }
 
+    public ParkingLot(String parkingLotID, int capacity,String parkingBoyId) {
+        this.parkingLotId = parkingLotID;
+        this.capacity = capacity;
+        this.parkingBoyId = parkingBoyId;
+    }
+
     public Long getId() {
         return id;
     }
