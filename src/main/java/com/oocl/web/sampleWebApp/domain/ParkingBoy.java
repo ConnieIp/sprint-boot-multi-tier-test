@@ -5,7 +5,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "parking_boy")
 public class ParkingBoy {
-    private static Long counter=0L;
     @Id
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     private Long id;
@@ -26,12 +25,10 @@ public class ParkingBoy {
     }
 
     protected ParkingBoy() {
-        this.id=counter++;
     }
 
     public ParkingBoy(String employeeId) {
         this.employeeId = employeeId;
-        this.id=counter++;
     }
 }
 
