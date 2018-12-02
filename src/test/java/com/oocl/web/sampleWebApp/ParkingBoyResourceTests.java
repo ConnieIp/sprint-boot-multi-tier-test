@@ -105,6 +105,28 @@ public class ParkingBoyResourceTests {
     }
 
     @Test
+    public void should_not_create_parking_boys_if_parkingBoyId_already_exist() throws Exception {
+        //Given a parking boy {"employeeId":"boy"}, When POST /parkingBoys, Return 201
+        // Given
+        parkingBoyRepository.save(new ParkingBoy("PB0001"));
+        parkingBoyRepository.flush();
+        final ParkingBoy boy = new ParkingBoy("PB0001");
+
+        // When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .post("/parkingboys").content(asJsonString(boy)).contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        // Then
+        assertEquals(400, result.getResponse().getStatus());
+
+        final List<ParkingBoy> createdBoy = parkingBoyRepository.findAll();
+        entityManager.clear();
+
+        assertEquals(1, createdBoy.size());
+    }
+
+    @Test
     public void should_add_parking_lot_to_parking_boy() throws Exception {
         //Given a parking boy parking lot association {"parkingLotId": "String"} and parking boy id, When POST /parkingBoys/{employeeID}/parkingLots, Return 201
         //Given

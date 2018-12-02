@@ -37,6 +37,9 @@ public class ParkingBoyResource {
         if(parkingBoy.getEmployeeId().length()>64){
             return ResponseEntity.badRequest().build();
         }
+        if(parkingBoyRepository.findOneByEmployeeId(parkingBoy.getEmployeeId())!=null){
+            return ResponseEntity.badRequest().build();
+        }
         final ParkingBoyResponse parkingBoyResponse = ParkingBoyResponse.create(parkingBoyRepository.save(parkingBoy));
         return ResponseEntity.created(URI.create("/parkingboys")).body(parkingBoyResponse);
     }
