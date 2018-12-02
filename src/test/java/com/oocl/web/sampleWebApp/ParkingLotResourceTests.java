@@ -81,7 +81,7 @@ public class ParkingLotResourceTests {
 
     @Test
     public void should_not_create_parking_lots_if_length_exceed() throws Exception {
-        //Given a parkinglLot {"parkingLotId": "string", "capacity": integer} and parkingLotId length >64, When POST /parkingLots, Return 201
+        //Given a parkinglLot {"parkingLotId": "string", "capacity": integer} and parkingLotId length >64, When POST /parkingLots, Return 400
         // Given
         final ParkingLot lot = new ParkingLot("12345678901234567890123456789012345678901234567890123456789012345",10);
 
@@ -97,6 +97,28 @@ public class ParkingLotResourceTests {
         entityManager.clear();
 
         assertEquals(0,lots.size());
+    }
+
+    @Test
+    public void should_not_create_parking_lots_if_parkingLotId_already_esist() throws Exception {
+        //Given a parkinglLot {"parkingLotId": "string", "capacity": integer} and parkingLotId already exist, When POST /parkingLots, Return 400
+        // Given
+        parkingLotRepository.save(new ParkingLot("PL0001",10));
+        parkingLotRepository.flush();
+        final ParkingLot lot = new ParkingLot("PL0001",10);
+
+        // When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .post("/parkinglots").content(asJsonString(lot)).contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        // Then
+        assertEquals(400, result.getResponse().getStatus());
+
+        final List<ParkingLot> lots = parkingLotRepository.findAll();
+        entityManager.clear();
+
+        assertEquals(1,lots.size());
     }
 
     public static String asJsonString(final Object obj) {

@@ -28,6 +28,9 @@ public class ParkingLotResource {
         if(parkingLot.getParkingLotId().length()>64){
             return ResponseEntity.badRequest().build();
         }
+        if(parkingLotRepository.findOneByParkingLotId(parkingLot.getParkingLotId())!=null){
+            return ResponseEntity.badRequest().build();
+        }
         final ParkingLotResponse parkingLotResponse = ParkingLotResponse.create(parkingLotRepository.save(parkingLot));
         return ResponseEntity.created(URI.create("/parkinglots")).body(parkingLotResponse);
     }

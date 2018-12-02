@@ -86,7 +86,7 @@ public class ParkingBoyResourceTests {
 
     @Test
     public void should_not_create_parking_boys_if_parkingBoyId_length_exceed() throws Exception {
-        //Given a parking boy {"employeeId":"boy"}, When POST /parkingBoys, Return 201
+        //Given a parking boy {"employeeId":"string"} woth employeeId length>64, When POST /parkingBoys, Return 400
         // Given
         final ParkingBoy boy = new ParkingBoy("12345678901234567890123456789012345678901234567890123456789012345");
 
@@ -106,7 +106,7 @@ public class ParkingBoyResourceTests {
 
     @Test
     public void should_not_create_parking_boys_if_parkingBoyId_already_exist() throws Exception {
-        //Given a parking boy {"employeeId":"boy"}, When POST /parkingBoys, Return 201
+        //Given a parking boy {"employeeId":"string"} with employeeId already exist, When POST /parkingBoys, Return 400
         // Given
         parkingBoyRepository.save(new ParkingBoy("PB0001"));
         parkingBoyRepository.flush();
