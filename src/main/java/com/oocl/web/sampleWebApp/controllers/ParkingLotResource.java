@@ -23,4 +23,11 @@ public class ParkingLotResource {
         return ResponseEntity.ok(parkingLots);
     }
 
+    @PostMapping
+    public ResponseEntity<ParkingLotResponse> add(@RequestBody ParkingLot parkingLot) {
+        final ParkingLotResponse parkingLotResponse = ParkingLotResponse.create(parkingLotRepository.save(parkingLot));
+        return ResponseEntity.created(URI.create("/parkinglots")).body(parkingLotResponse);
+    }
+
+
 }
