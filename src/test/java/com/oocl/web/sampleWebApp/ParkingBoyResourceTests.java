@@ -197,7 +197,24 @@ public class ParkingBoyResourceTests {
     }
     @Test
     public void should_not_add_parking_lot_to_parking_boy_if_employeeId_not_exist() throws Exception {
-        //When POST /parkingBoys/{employeeId}/parkinglots with wrong employeeId , Return 404
+        //When POST /parkingBoys/{employeeId}/parkinglots with wrong employeeId , Return 400
+
+        // Given
+        final ParkingBoyParkingLotAssociationRequest associationRequest=new ParkingBoyParkingLotAssociationRequest("PL0001");
+
+
+        // When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .post("/parkingboys/boy/parkinglots").content(asJsonString(associationRequest)).contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+        // Then
+        assertEquals(400, result.getResponse().getStatus());
+
+    }
+
+    @Test
+    public void should_not_add_parking_lot_to_parking_boy_if_parking_lot_id_not_exist() throws Exception {
+        //When POST /parkingBoys/{employeeId}/parkinglots with wrong parkinglotId , Return 400
 
         // Given
         final ParkingBoyParkingLotAssociationRequest associationRequest=new ParkingBoyParkingLotAssociationRequest("PL0001");

@@ -51,6 +51,9 @@ public class ParkingBoyResource {
             return ResponseEntity.badRequest().build();
         }
         ParkingLot parkingLot=parkingLotRepository.findOneByParkingLotId(parkingBoyParkingLotAssociationRequest.getParkingLotId());
+        if(parkingLot==null){
+            return ResponseEntity.badRequest().build();
+        }
         parkingLot.setParkingBoyId(employeeId);
         parkingLotRepository.save(parkingLot);
         return new ResponseEntity(HttpStatus.CREATED);
