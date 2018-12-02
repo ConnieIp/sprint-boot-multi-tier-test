@@ -5,8 +5,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "parking_boy")
 public class ParkingBoy {
+    private static Long counter=0L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "employee_id", length = 64, unique = true, nullable = false)
@@ -24,10 +24,13 @@ public class ParkingBoy {
         this.employeeId = employeeId;
     }
 
-    protected ParkingBoy() {}
+    protected ParkingBoy() {
+        this.id=counter++;
+    }
 
     public ParkingBoy(String employeeId) {
         this.employeeId = employeeId;
+        this.id=counter++;
     }
 }
 
