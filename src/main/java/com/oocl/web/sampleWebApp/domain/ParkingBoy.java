@@ -7,6 +7,7 @@ import javax.persistence.*;
 public class ParkingBoy {
     private static Long counter=0L;
     @Id
+    @GeneratedValue(strategy =GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "employee_id", length = 64, unique = true, nullable = false)
