@@ -229,6 +229,28 @@ public class ParkingBoyResourceTests {
 
     }
 
+    @Test
+    public void should_not_add_parking_lot_to_parking_boy_if_parking_lot_already_have_parking_boy() throws Exception {
+        //When POST /parkingBoys/{employeeId}/parkinglots with parkinglot already have parking boy , Return 409
+
+        // Given
+        final ParkingBoy boy = parkingBoyRepository.save(new ParkingBoy("boy"));
+        parkingBoyRepository.flush();
+        final ParkingLot lot = parkingLotRepository.save(new ParkingLot("PL0001",10,"boy"));
+        parkingLotRepository.flush();
+        final ParkingBoyParkingLotAssociationRequest associationRequest=new ParkingBoyParkingLotAssociationRequest("PL0001");
+
+
+        // When
+        final MvcResult result = mvc.perform(MockMvcRequestBuilders
+                .post("/parkingboys/boy/parkinglots").content(asJsonString(associationRequest)).contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+        // Then
+        assertEquals(409, result.getResponse().getStatus());
+
+    }
+
+
 
     public static String asJsonString(final Object obj) {
         try {
